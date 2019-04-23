@@ -41,5 +41,6 @@ class JavaChangeProcessor {
             return;
         }
         spec.getClassNames().addAll(actualDependents.getDependentClasses());
+        spec.addReCompileClass(className, actualDependents.getDependentClasses());
     }
 }

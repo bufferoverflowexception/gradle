@@ -23,6 +23,7 @@ import java.util.LinkedHashSet;
 public class RecompilationSpec {
 
     private final Collection<String> classesToCompile = new NormalizingClassNamesSet();
+    private final Map<String,LinkedHashSet<String>> classesToCompileGroup = new HashMap<>();
     private String fullRebuildCause;
 
     public Collection<String> getClassNames() {
@@ -39,6 +40,29 @@ public class RecompilationSpec {
 
     public void setFullRebuildCause(String description, File file) {
         fullRebuildCause = description != null? description : "'" + file.getName() + "' was changed";
+    }
+
+    public void addReCompileClass(String file, Set<String> sets) {
+        LinkedHashSet<String> classSet = classesToCompileGroup.get(file);
+        if (classSet == null) {
+            classSet = LinkedHashSet<>();
+            classesToCompileGroup.put(file,classSet);
+        }
+        for (String cn : sets) {
+            classSet.add(NormalizingClassNames(cn))
+        }
+    }
+
+    public Map<String, LinkedHashSet<String>> getAllReCompileClass() {
+        return classesToCompileGroup;
+    } 
+
+    private String NormalizingClassNames(String className) {
+        int idx = className.indexOf('$');
+        if (idx>0) {
+            className = className.substring(0, idx);
+        }
+        return className
     }
 
     private static class NormalizingClassNamesSet extends LinkedHashSet<String> {
