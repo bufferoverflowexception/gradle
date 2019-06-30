@@ -18,12 +18,15 @@ package org.gradle.api.internal.tasks.compile.incremental.recomp;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class RecompilationSpec {
 
     private final Collection<String> classesToCompile = new NormalizingClassNamesSet();
-    private final Map<String,LinkedHashSet<String>> classesToCompileGroup = new HashMap<>();
+    private final Map<String, LinkedHashSet<String>> classesToCompileGroup = new HashMap<>();
     private String fullRebuildCause;
 
     public Collection<String> getClassNames() {
@@ -39,7 +42,7 @@ public class RecompilationSpec {
     }
 
     public void setFullRebuildCause(String description, File file) {
-        fullRebuildCause = description != null? description : "'" + file.getName() + "' was changed";
+        fullRebuildCause = description != null ? description : "'" + file.getName() + "' was changed";
     }
 
     public void addReCompileClass(String file, Set<String> sets) {
@@ -49,27 +52,27 @@ public class RecompilationSpec {
             classesToCompileGroup.put(file,classSet);
         }
         for (String cn : sets) {
-            classSet.add(NormalizingClassNames(cn))
+            classSet.add(NormalizingClassNames(cn));
         }
     }
 
     public Map<String, LinkedHashSet<String>> getAllReCompileClass() {
         return classesToCompileGroup;
-    } 
+    }
 
     private String NormalizingClassNames(String className) {
         int idx = className.indexOf('$');
-        if (idx>0) {
+        if (idx > 0) {
             className = className.substring(0, idx);
         }
-        return className
+        return className;
     }
 
     private static class NormalizingClassNamesSet extends LinkedHashSet<String> {
         @Override
         public boolean add(String className) {
             int idx = className.indexOf('$');
-            if (idx>0) {
+            if (idx > 0) {
                 className = className.substring(0, idx);
             }
             return super.add(className);
